@@ -174,22 +174,23 @@ void receiveCommand(unsigned long value) {
 }
 
 void loop() {
-    
-  while(!isOn) {
+ 
+  if (receiver.decode(&results)) {
     if(results.value == 0xFFA25D) {
       isOn = true;
     }
-  }
-
-  if (receiver.decode(&results)) {
+   
     if (results.value == 0XFFFFFFFF) {
        // ottengo il codice 0XFFFFFFFF se premo un pulsante a lungo --> dunque il pulsante  che premo(results.value) corrisponde al tasto 
        // schiacciato in precedenza memorizzato in keyvalue
       results.value = key_value;
     }
-    receiveCommand(results.value);    
-    key_value = results.value;//qui ho ancora il valore attuale --> precedente al resume
-    receiver.resume();//per ricevere nuovo valore
+    
+    if (isOn) {
+      receiveCommand(results.value);    
+      key_value = results.value;//qui ho ancora il valore attuale --> precedente al resume
+      receiver.resume();//per ricevere nuovo valore
+    }
   } else {
     digitalWrite(LED_VERDE, LOW);
   }
