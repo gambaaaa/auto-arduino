@@ -134,13 +134,9 @@ void stopCar(){
       analogWrite(ENB, speedCar);
 }
 
-void receiveCommand(unsigned long value) {
+void moveCar(unsigned long value) {
   switch(value) {
       // TO-DO: Aggiungere caso avanti-sx / avanti-dx / dietro-sx / dietro-dx 
-      case 0xFFA25D: 
-        Serial.println("-->Hai premuto il pulsante power");
-        isOn = true;
-        break;
       /*
       case 0xFF6897: 
         Serial.println("--> Hai premuto 0 (base DEC)");
@@ -187,7 +183,7 @@ void loop() {
     }
     
     if (isOn) {
-      receiveCommand(results.value);    
+      moveCar(results.value);    
       key_value = results.value;//qui ho ancora il valore attuale --> precedente al resume
       receiver.resume();//per ricevere nuovo valore
     }
