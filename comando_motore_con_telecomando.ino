@@ -1,38 +1,115 @@
-#include <ESP32Servo.h>
-#include <IRremote.hpp>
+//#include <ESP32Servo.h>
+//#include <IRremote.hpp>
 
-#define ENA   14          // Enable/speed motors Right        GPIO14(D5)
-#define ENB   12          // Enable/speed motors Left         GPIO12(D6)
-#define IN_1  15          // L298N in1 motors Rightx          GPIO15(D8)
-#define IN_2  13          // L298N in2 motors Right           GPIO13(D7)
-#define IN_3  2           // L298N in3 motors Left            GPIO2(D4)
-#define IN_4  0           // L298N in4 motors Left            GPIO0(D3)
+#define ENA   23          // Enable/speed motors Right        GPIO14(D5)
+#define ENB   22          // Enable/speed motors Left         GPIO12(D6)
+#define IN_1  19          // L298N in1 motors Rightx          GPIO15(D8)
+#define IN_2  18          // L298N in2 motors Right           GPIO13(D7)
+#define IN_3  4          // L298N in3 motors Left            GPIO2(D4)
+#define IN_4  5           // L298N in4 motors Left            GPIO0(D3)
 #define IR_PIN 7
+#define TRIG 15
+#define ECHO 2
+#define BUZZER_PASSIVO 13
+#define LED_VERDE 32
+#define LED_RGB_R 27
+#define LED_RGB_G 14
+#define LED_RGB_B 12
+#define LEDC_CHANNEL_R 0 // il canale 0 è del rosso
+#define LEDC_CHANNEL_G 1 // il canale 1 è del verde
+#define LEDC_CHANNEL_B 2 // il canale 2 è del blu
+#define LEDC_TIMER_8_BIT 8 // PWM a 8 bit (codice RGB a 8 bit)
+#define LEDC_BASE_FREQ 10000
 
-#include <ESP8266WiFi.h>
-#include <WiFiClient.h> 
-#include <ESP8266WebServer.h>
-
-IRrecv receiver(IR_PIN); // ricevitore
-decode_results results;
+//IRrecv receiver(IR_PIN); // ricevitore
+//decode_results results;
 
 unsigned long key_value = 0; // tasto che premo --> per salvare il vecchio stato / tasto premuto
+long readout;
+
+float distanza;
 
 bool isOn = false;
 
+int tono;
 int speedCar = 800;         // 400 - 1023.
 int speed_Coeff = 3;
 
 void setup() {
- 
+    
+  Serial.begin(19200); 
+  Serial.println("Ciao!");
+  
+  ledcSetup(LEDC_CHANNEL_R, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // inizializza i canali
+  ledcAttachPin(LED_RGB_R, LEDC_CHANNEL_R); // Assegna i pin ai canali
+  ledcSetup(LEDC_CHANNEL_G, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // inizializza i canali
+  ledcAttachPin(LED_RGB_G, LEDC_CHANNEL_G); // Assegna i pin ai canali
+  ledcSetup(LEDC_CHANNEL_B, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // inizializza i canali
+  ledcAttachPin(LED_RGB_B, LEDC_CHANNEL_B); // Assegna i pin ai canali
+  //receiver.enableIRIn();
+  
+  pinMode(LED_RGB_R, OUTPUT);
+  pinMode(LED_RGB_G, OUTPUT);
+  pinMode(LED_RGB_B, OUTPUT); 
   pinMode(ENA, OUTPUT);
   pinMode(ENB, OUTPUT);  
   pinMode(IN_1, OUTPUT);
   pinMode(IN_2, OUTPUT);
   pinMode(IN_3, OUTPUT);
   pinMode(IN_4, OUTPUT); 
-  
-  Serial.begin(115200);  
+  pinMode (TRIG, OUTPUT);
+  pinMode (ECHO, INPUT);
+  pinMode (LED_VERDE, OUTPUT);
+  welcomeLed(); 
+}
+
+void suonaBuzzerDistanza(float distanza) {
+
+    /* 
+      colore:   R     G     B
+      rosso:    255   0     0
+      verde:    0     255   0
+      arancio:  255   128   0
+    */
+
+  if ((int) distanza <= 2) {
+    RGB_Color(255, 0, 0);
+    delay(250);
+    RGB_Color(0, 0, 0);
+    beepBuzzer(BUZZER_PASSIVO, 2000, 100);
+  } else if ((int) distanza <= 4 && (int) distanza > 2) {
+    RGB_Color(255, 0, 0);
+    beepBuzzer(BUZZER_PASSIVO, 1600, 250);
+  } else if ((int) distanza <= 6 && (int) distanza > 4) {
+    RGB_Color(255, 128, 0);
+    beepBuzzer(BUZZER_PASSIVO, 1200, 500);
+  } else if ((int) distanza <= 8 && (int) distanza > 6) {
+    RGB_Color(255, 128, 0);
+    beepBuzzer(BUZZER_PASSIVO, 800, 750);
+  } else if ((int) distanza <= 10 && (int) distanza > 8) {
+    RGB_Color(255, 128, 0);
+    beepBuzzer(BUZZER_PASSIVO, 400, 1000);
+  } else {
+    RGB_Color(0, 255, 0); 
+    noTone(BUZZER_PASSIVO);
+  }
+}
+
+void beepBuzzer(int pin, int freq, int delayTime) {
+  // delayTime in ms, freq in Hz
+  tone(pin, freq);
+  delay(delayTime);
+  noTone(pin);
+  delay(delayTime);
+}
+
+void RGB_Color(int R, int G, int B) {
+  R = 255 - R;
+  G = 255 - G;
+  B = 255 - B;
+  analogWrite(LED_RGB_R, R);
+  analogWrite(LED_RGB_G, G);
+  analogWrite(LED_RGB_B, B);  
 }
 
 void goAhead(){ 
@@ -44,7 +121,7 @@ void goAhead(){
       digitalWrite(IN_3, LOW);
       digitalWrite(IN_4, HIGH);
       analogWrite(ENB, speedCar);
-  }
+}
 
 void goBack(){ 
 
@@ -169,8 +246,29 @@ void moveCar(unsigned long value) {
     }
 }
 
+void welcomeLed() {
+  
+  digitalWrite(LED_VERDE, HIGH);
+  delay(500);  
+  digitalWrite(LED_VERDE, LOW);
+  delay(500); 
+  digitalWrite(LED_VERDE, HIGH);
+  delay(500);  
+  digitalWrite(LED_VERDE, LOW);
+  delay(500); 
+}
+
 void loop() {
  
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(9);  //impulso da 10us
+  digitalWrite(TRIG, LOW);
+  readout = pulseIn(ECHO, HIGH);
+  distanza = (float) readout/58; //velocità A/R = 340m/s => distanza(cm) = T(ms)*17 = T(us)*0,017 = T(us)/58 
+  Serial.println(distanza);
+  suonaBuzzerDistanza(distanza);
+
+  /*
   if (receiver.decode(&results)) {
     if(results.value == 0xFFA25D) {
       isOn = true;
@@ -190,6 +288,7 @@ void loop() {
   } else {
     digitalWrite(LED_VERDE, LOW);
   }
+  */
 
-  delay(50);
+  delay(100);
 }
