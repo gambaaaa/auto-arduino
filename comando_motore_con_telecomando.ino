@@ -11,7 +11,7 @@
 /*
   PROTOCOLLO IR USATO : NEC
 */
-#define RECV_PIN 7         //Pin ricevitore IR  - IR_PIN
+#define RECV_PIN 7         // Pin ricevitore IR  - IR_PIN
 #define TRIG 15
 #define ECHO 2
 #define BUZZER_PASSIVO 13
@@ -19,10 +19,10 @@
 #define LED_RGB_R 27
 #define LED_RGB_G 14
 #define LED_RGB_B 12
-#define LED_IR_ON 35     //eventualmente cambiare 
-#define LEDC_CHANNEL_R 0 // il canale 0 è del rosso
-#define LEDC_CHANNEL_G 1 // il canale 1 è del verde
-#define LEDC_CHANNEL_B 2 // il canale 2 è del blu
+#define LED_IR_ON 35     // Eventualmente cambiare 
+#define LEDC_CHANNEL_R 0 // Il canale 0 è del rosso
+#define LEDC_CHANNEL_G 1 // Il canale 1 è del verde
+#define LEDC_CHANNEL_B 2 // Il canale 2 è del blu
 #define LEDC_TIMER_8_BIT 8 // PWM a 8 bit (codice RGB a 8 bit)
 #define LEDC_BASE_FREQ 10000
 
@@ -30,7 +30,7 @@
   Strutture dati per gestione ricezione Comando IR
 */
 
-//Dichiarazione delle funzioni inerenti la gestione IR precedente alla struct vectoredCode
+// Dichiarazione delle funzioni inerenti la gestione IR precedente alla struct vectoredCode
 
 void goAhead();
 void goBack();
@@ -44,12 +44,12 @@ void powerOn();
 void stopCar();
 
 
-//Definizione di un nuovo tipo di dato per definire un puntatore a funzione da usare come valore di ritorno di una funzione.(per ovviare problemi di compilazione)
+// Definizione di un nuovo tipo di dato per definire un puntatore a funzione da usare come valore di ritorno di una funzione. (per ovviare problemi di compilazione)
 typedef void (*ptr)();
 typedef ptr (*pt)();
 
 /*
-  "Codici Vettorizzati" ; per codici si intende il codice associato allo specifico segnale IR ricevuto
+  "Codici Vettorizzati": per codici si intende il codice associato allo specifico segnale IR ricevuto
 
   TASTI UTILIZZATI per gestire i movimenti della macchina : 
 
@@ -62,32 +62,32 @@ typedef ptr (*pt)();
   7 -> INDIETRO - SX
   8 -> INDIETRO
   9 -> INDIETRO - DX
-
 */
-struct vectoredCode{
 
-  uint32_t codeValue;  //Codice IR
-  void (*action)();    //funzione da eseguire associata allo specifico codice
-  const char *actionDescription;   //breve descrizione / titolo della funzione associata al codice ; Utile per eventuale debug,logfile..
+struct vectoredCode {
+
+  uint32_t codeValue;  // Codice IR
+  void (*action)();    // Funzione da eseguire associata allo specifico codice
+  const char *actionDescription;   // Breve descrizione / titolo della funzione associata al codice: itile per eventuale debug, logfile...
 
 } codeList [] = {
 
-  {0xBA45FF00, &powerOn, "power"} , //la macchina si accende --> POWER
-  {0xB847FF00, &stopCar, "stop"} , //la macchina si ferma --> STOP 
-  {0xE718FF00, &goAhead, "goAhead"} , //la macchina va avanti --> 2
-  {0xAD52FF00, &goBack, "goBack"} , // la macchina torna indietro --> 8
-  {0xA55AFF00, &goRight, "goRight"} , // la macchina va a dx --> 6
-  {0xF708FF00, &goLeft, "goLeft"} , //la macchina va a sx --> 4
-  {0xA15EFF00, &goAheadRight, "goAheadRight"}, // la macchina a va avanti verso dx --> 3
-  {0xF30CFF00, &goAheadLeft, "goAheadLeft"}, // la macchina a va avanti verso sx --> 1
-  {0xB54AFF00, &goBackRight, "goBackRight"}, // la macchina torna indietro verso dx --> 9
-  {0xBD42FF00, &goBackLeft,  "goBackLeft"}, // la macchina torna indietro verso sx --> 7
+  {0xBA45FF00, &powerOn, "power"} , // La macchina si accende --> POWER
+  {0xB847FF00, &stopCar, "stop"} , // La macchina si ferma --> STOP 
+  {0xE718FF00, &goAhead, "goAhead"} , // La macchina va avanti --> 2
+  {0xAD52FF00, &goBack, "goBack"} , // La macchina torna indietro --> 8
+  {0xA55AFF00, &goRight, "goRight"} , // La macchina va a dx --> 6
+  {0xF708FF00, &goLeft, "goLeft"} , // La macchina va a sx --> 4
+  {0xA15EFF00, &goAheadRight, "goAheadRight"}, // La macchina a va avanti verso dx --> 3
+  {0xF30CFF00, &goAheadLeft, "goAheadLeft"}, // La macchina a va avanti verso sx --> 1
+  {0xB54AFF00, &goBackRight, "goBackRight"}, // La macchina torna indietro verso dx --> 9
+  {0xBD42FF00, &goBackLeft,  "goBackLeft"}, // La macchina torna indietro verso sx --> 7
   
 };
 
-//funzione che restituisce la descrizione dell'azione/funzione inerente uno specifico codice
-const char * getActionDescription(uint32_t codeValue)//da usare con uno switch value
-{
+// Funzione che restituisce la descrizione dell'azione/funzione inerente uno specifico codice
+const char * getActionDescription(uint32_t codeValue) { // Da usare con uno switch value
+
   size_t codeActionCount = sizeof codeList / sizeof codeList[0];
   for (size_t i = 0; i < codeActionCount; i++)
   {
@@ -96,13 +96,13 @@ const char * getActionDescription(uint32_t codeValue)//da usare con uno switch v
       return codeList[i].actionDescription;
     }
   }
-  return "";//significa che non è stata ritrovata nessuna associazione
+  return ""; // Significa che non è stata ritrovata nessuna associazione
 }
 
 
-//funzione che restituisce il puntatore alla funzione associata ad uno specifico codice
-ptr getFunctionAction(uint32_t codeValue)//da usare con uno switch value
-{
+// Funzione che restituisce il puntatore alla funzione associata ad uno specifico codice
+ptr getFunctionAction(uint32_t codeValue) { // Da usare con uno switch value
+
   size_t codeActionCount = sizeof codeList / sizeof codeList[0];
   for (size_t i = 0; i < codeActionCount; i++)
   {
@@ -111,20 +111,20 @@ ptr getFunctionAction(uint32_t codeValue)//da usare con uno switch value
       return codeList[i].action;
     }
   }
-  return &nothing;//significa che non è stata ritrovata nessuna associazione - vedi funzione nothing
+  return &nothing; // Significa che non è stata ritrovata nessuna associazione - vedi funzione nothing
 }
 
-IRrecv receiver(RECV_PIN); // ricevitore - vedi IRremote.hpp
+IRrecv receiver(RECV_PIN); // Ricevitore: vedi IRremote.hpp
 decode_results results;
-//void (*p)();
-ptr p;//puntatore che "riferisce" una funzione associata ad un eventuale codice che viene gestito (codice IR)
+// void (*p)();
+ptr p; // Puntatore che "riferisce" una funzione associata ad un eventuale codice che viene gestito (codice IR)
 
-unsigned long key_value = 0; // tasto che premo --> per salvare il vecchio stato / tasto premuto
+unsigned long key_value = 0; // Tasto che premo --> per salvare il vecchio stato / tasto premuto
 long readout;
 
 float distanza;
 
-bool isOn = false;//stato macchina . isOn = false ==> macchina spenta | isOn = true ==> ho premuto Power 
+bool isOn = false; // Stato macchina: isOn = false ==> macchina spenta | isOn = true ==> ho premuto Power 
 
 int tono;
 int speedCar = 800;         // 400 - 1023.
@@ -137,11 +137,11 @@ void setup() {
   Serial.begin(19200); 
   Serial.println("Ciao!");
   
-  ledcSetup(LEDC_CHANNEL_R, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // inizializza i canali
+  ledcSetup(LEDC_CHANNEL_R, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // Inizializza i canali
   ledcAttachPin(LED_RGB_R, LEDC_CHANNEL_R); // Assegna i pin ai canali
-  ledcSetup(LEDC_CHANNEL_G, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // inizializza i canali
+  ledcSetup(LEDC_CHANNEL_G, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // Inizializza i canali
   ledcAttachPin(LED_RGB_G, LEDC_CHANNEL_G); // Assegna i pin ai canali
-  ledcSetup(LEDC_CHANNEL_B, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // inizializza i canali
+  ledcSetup(LEDC_CHANNEL_B, LEDC_BASE_FREQ, LEDC_TIMER_8_BIT); // Inizializza i canali
   ledcAttachPin(LED_RGB_B, LEDC_CHANNEL_B); // Assegna i pin ai canali
   receiver.begin(RECV_PIN, ENABLE_LED_FEEDBACK);
   
@@ -210,95 +210,95 @@ void RGB_Color(int R, int G, int B) {
   analogWrite(LED_RGB_B, B);  
 }
 
-void goAhead(){ 
+void goAhead() { 
 
-      digitalWrite(IN_1, LOW);
-      digitalWrite(IN_2, HIGH);
-      analogWrite(ENA, speedCar);
+  digitalWrite(IN_1, LOW);
+  digitalWrite(IN_2, HIGH);
+  analogWrite(ENA, speedCar);
 
-      digitalWrite(IN_3, LOW);
-      digitalWrite(IN_4, HIGH);
-      analogWrite(ENB, speedCar);
+  digitalWrite(IN_3, LOW);
+  digitalWrite(IN_4, HIGH);
+  analogWrite(ENB, speedCar);
 }
 
-void goBack(){ 
+void goBack() { 
 
-      digitalWrite(IN_1, HIGH);
-      digitalWrite(IN_2, LOW);
-      analogWrite(ENA, speedCar);
+  digitalWrite(IN_1, HIGH);
+  digitalWrite(IN_2, LOW);
+  analogWrite(ENA, speedCar);
 
-      digitalWrite(IN_3, HIGH);
-      digitalWrite(IN_4, LOW);
-      analogWrite(ENB, speedCar);
-  }
+  digitalWrite(IN_3, HIGH);
+  digitalWrite(IN_4, LOW);
+  analogWrite(ENB, speedCar);
+}
 
-void goRight(){ 
+void goRight() { 
 
-      digitalWrite(IN_1, HIGH);
-      digitalWrite(IN_2, LOW);
-      analogWrite(ENA, speedCar);
+  digitalWrite(IN_1, HIGH);
+  digitalWrite(IN_2, LOW);
+  analogWrite(ENA, speedCar);
 
-      digitalWrite(IN_3, LOW);
-      digitalWrite(IN_4, HIGH);
-      analogWrite(ENB, speedCar);
-  }
+  digitalWrite(IN_3, LOW);
+  digitalWrite(IN_4, HIGH);
+  analogWrite(ENB, speedCar);
+}
 
-void goLeft(){
+void goLeft() {
 
-      digitalWrite(IN_1, LOW);
-      digitalWrite(IN_2, HIGH);
-      analogWrite(ENA, speedCar);
+  digitalWrite(IN_1, LOW);
+  digitalWrite(IN_2, HIGH);
+  analogWrite(ENA, speedCar);
 
-      digitalWrite(IN_3, HIGH);
-      digitalWrite(IN_4, LOW);
-      analogWrite(ENB, speedCar);
-  }
+  digitalWrite(IN_3, HIGH);
+  digitalWrite(IN_4, LOW);
+  analogWrite(ENB, speedCar);
+}
 
-void goAheadRight(){
+void goAheadRight() {
       
-      digitalWrite(IN_1, LOW);
-      digitalWrite(IN_2, HIGH);
-      analogWrite(ENA, speedCar/speed_Coeff);
+  digitalWrite(IN_1, LOW);
+  digitalWrite(IN_2, HIGH);
+  analogWrite(ENA, speedCar/speed_Coeff);
  
-      digitalWrite(IN_3, LOW);
-      digitalWrite(IN_4, HIGH);
-      analogWrite(ENB, speedCar);
-   }
+  digitalWrite(IN_3, LOW);
+  digitalWrite(IN_4, HIGH);
+  analogWrite(ENB, speedCar);
+}
 
-void goAheadLeft(){
+void goAheadLeft() {
       
-      digitalWrite(IN_1, LOW);
-      digitalWrite(IN_2, HIGH);
-      analogWrite(ENA, speedCar);
+  digitalWrite(IN_1, LOW);
+  digitalWrite(IN_2, HIGH);
+  analogWrite(ENA, speedCar);
 
-      digitalWrite(IN_3, LOW);
-      digitalWrite(IN_4, HIGH);
-      analogWrite(ENB, speedCar/speed_Coeff);
-  }
+  digitalWrite(IN_3, LOW);
+  digitalWrite(IN_4, HIGH);
+  analogWrite(ENB, speedCar/speed_Coeff);
+}
 
-void goBackRight(){ 
+void goBackRight() { 
 
-      digitalWrite(IN_1, HIGH);
-      digitalWrite(IN_2, LOW);
-      analogWrite(ENA, speedCar/speed_Coeff);
+  digitalWrite(IN_1, HIGH);
+  digitalWrite(IN_2, LOW);
+  analogWrite(ENA, speedCar/speed_Coeff);
 
-      digitalWrite(IN_3, HIGH);
-      digitalWrite(IN_4, LOW);
-      analogWrite(ENB, speedCar);
-  }
+  digitalWrite(IN_3, HIGH);
+  digitalWrite(IN_4, LOW);
+  analogWrite(ENB, speedCar);
+}
 
 void goBackLeft(){ 
 
-      digitalWrite(IN_1, HIGH);
-      digitalWrite(IN_2, LOW);
-      analogWrite(ENA, speedCar);
+  digitalWrite(IN_1, HIGH);
+  digitalWrite(IN_2, LOW);
+  analogWrite(ENA, speedCar);
 
-      digitalWrite(IN_3, HIGH);
-      digitalWrite(IN_4, LOW);
-      analogWrite(ENB, speedCar/speed_Coeff);
+  digitalWrite(IN_3, HIGH);
+  digitalWrite(IN_4, LOW);
+  analogWrite(ENB, speedCar/speed_Coeff);
 }
 
-void powerOn(){ //abilito i movimenti - le funzioni di movimento della macchina - accendo la macchina
+void powerOn() { // Abilito il movimento e accendo la macchina
 
   digitalWrite(LED_IR_ON, HIGH);
   delay(200);  
@@ -312,10 +312,9 @@ void powerOn(){ //abilito i movimenti - le funzioni di movimento della macchina 
   digitalWrite(LED_IR_ON, HIGH);
 
   isOn = true;
-
 }
 
-void stopCar(){  //powerOff
+void stopCar() {  // PowerOff
 
       digitalWrite(IN_1, LOW);
       digitalWrite(IN_2, LOW);
@@ -328,13 +327,11 @@ void stopCar(){  //powerOff
       digitalWrite(LED_IR_ON, LOW);
 
       isOn = false;
-
 }
 
-void nothing(){
+void nothing() {
 
   Serial.println("Codice non riconosciuto / non previsto");
-
 }
 
 void welcomeLed() {
@@ -370,28 +367,28 @@ void loop() {
      * address is in command is in IrReceiver.decodedIRData.address
      * and up to 32 bit raw data in IrReceiver.decodedIRData.decodedRawData
   */
+
   if (receiver.decode()) {
-    //stampa utile per debug e check funzionamento della gestione IR
-    if(receiver.decodedIRData.decodedRawData == 0){ //CASO RIPETIZIONE TASTO (associato ad uno specifico codice)- SIGNIFICATIVO  
-      Serial.println(key_value, HEX);//in key_value mantengo / memorizzo il codice associato alla pressione di tasti(del trasmettitore IR) differenti tra loro
-    }else{
+    // Stampa utile per debug e check funzionamento della gestione IR
+    if(receiver.decodedIRData.decodedRawData == 0) { // CASO RIPETIZIONE TASTO (associato ad uno specifico codice)- SIGNIFICATIVO  
+      Serial.println(key_value, HEX); // In key_value mantengo / memorizzo il codice associato alla pressione di tasti(del trasmettitore IR) differenti tra loro
+    } else {
       Serial.println(receiver.decodedIRData.decodedRawData, HEX); // Stampa del relativo codice ricevuto
       
-      key_value= (receiver.decodedIRData.decodedRawData);
+      key_value = (receiver.decodedIRData.decodedRawData);
       p = getFunctionAction(key_value);
       const char *actionDescr = getActionDescription(key_value);
       
       Serial.println(actionDescr);
       
-      if(actionDescr!=""){//se il codice è riconosciuto tra quelli previsti in codeList - struct
-          if(!isOn && actionDescr=="power"){//solo in corrispondenza di power a macchina spenta, viene eseguita la funzione riferita da p
-             (*p)();//p punta a powerOn()
-          }else if(isOn && actionDescr!="power"){//solo se la macchina è accesa posso "utilizzarla"
-              (*p)();//sicuramente p non punta a powerOn poichè è già accesa 
+      if(actionDescr!="") { // Se il codice è riconosciuto tra quelli previsti in codeList - struct
+          if(!isOn && actionDescr=="power") { // Solo in corrispondenza di power a macchina spenta, viene eseguita la funzione riferita da p
+             (*p)(); //p punta a powerOn()
+          } else if(isOn && actionDescr!="power") { // Solo se la macchina è accesa posso "utilizzarla"
+              (*p)(); // Sicuramente p non punta a powerOn poichè è già accesa 
           }
-      }
-      else{//codice non è riconosciuto - la macchina rimane ferma
-        (*p)();//p riferisce la funzione nothing --> Serial.println("Codice non riconosciuto");
+      } else { // Codice non è riconosciuto - la macchina rimane ferma
+        (*p)(); // p riferisce la funzione nothing --> Serial.println("Codice non riconosciuto");
       }
     }
   /*
