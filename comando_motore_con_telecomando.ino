@@ -131,7 +131,7 @@ bool isOn = false; // Stato macchina: isOn = false ==> macchina spenta | isOn = 
 
 int tono;
 int speedCar = 512;         // 400 - 1023.
-
+int speedCoeff = 3;
 //----------------------
 
 void setup() {
@@ -260,7 +260,7 @@ void goAheadRight() {
       
   digitalWrite(IN_1, LOW);
   digitalWrite(IN_2, HIGH);
-  analogWrite(ENA, speedCar/speed_Coeff);
+  analogWrite(ENA, speedCar/speedCoeff);
  
   digitalWrite(IN_3, LOW);
   digitalWrite(IN_4, HIGH);
@@ -275,14 +275,14 @@ void goAheadLeft() {
 
   digitalWrite(IN_3, LOW);
   digitalWrite(IN_4, HIGH);
-  analogWrite(ENB, speedCar/speed_Coeff);
+  analogWrite(ENB, speedCar/speedCoeff);
 }
 
 void goBackRight() { 
 
   digitalWrite(IN_1, HIGH);
   digitalWrite(IN_2, LOW);
-  analogWrite(ENA, speedCar/speed_Coeff);
+  analogWrite(ENA, speedCar/speedCoeff);
 
   digitalWrite(IN_3, HIGH);
   digitalWrite(IN_4, LOW);
@@ -297,7 +297,7 @@ void goBackLeft(){
 
   digitalWrite(IN_3, HIGH);
   digitalWrite(IN_4, LOW);
-  analogWrite(ENB, speedCar/speed_Coeff);
+  analogWrite(ENB, speedCar/speedCoeff);
 }
 
 void decreaseSpeed(){
