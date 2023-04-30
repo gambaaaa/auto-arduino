@@ -1,1 +1,1 @@
-Sei stato bisiato
+Scemo chi legge
