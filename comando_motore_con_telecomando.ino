@@ -82,7 +82,8 @@ struct vectoredCode {
   {0xF30CFF00, &goAheadLeft, "goAheadLeft"}, // La macchina a va avanti verso sx --> 1
   {0xB54AFF00, &goBackRight, "goBackRight"}, // La macchina torna indietro verso dx --> 9
   {0xBD42FF00, &goBackLeft,  "goBackLeft"}, // La macchina torna indietro verso sx --> 7
-  
+  // {0xBA45FF00, &decreseSpeed, "decreseSpeed"} , // Diminuisco velocità auto --> -
+  // {0xBA45FF00, &increaseSpeed, "increaseSpeed"} , // Aumento velocità auto --> +
 };
 
 // Funzione che restituisce la descrizione dell'azione/funzione inerente uno specifico codice
@@ -96,6 +97,7 @@ const char * getActionDescription(uint32_t codeValue) { // Da usare con uno swit
       return codeList[i].actionDescription;
     }
   }
+
   return ""; // Significa che non è stata ritrovata nessuna associazione
 }
 
@@ -111,6 +113,7 @@ ptr getFunctionAction(uint32_t codeValue) { // Da usare con uno switch value
       return codeList[i].action;
     }
   }
+  
   return &nothing; // Significa che non è stata ritrovata nessuna associazione - vedi funzione nothing
 }
 
@@ -127,8 +130,7 @@ float distanza;
 bool isOn = false; // Stato macchina: isOn = false ==> macchina spenta | isOn = true ==> ho premuto Power 
 
 int tono;
-int speedCar = 800;         // 400 - 1023.
-int speed_Coeff = 3;
+int speedCar = 512;         // 400 - 1023.
 
 //----------------------
 
@@ -296,6 +298,16 @@ void goBackLeft(){
   digitalWrite(IN_3, HIGH);
   digitalWrite(IN_4, LOW);
   analogWrite(ENB, speedCar/speed_Coeff);
+}
+
+void decreaseSpeed(){
+  int speedCarTemp = speedCar - 8;
+  speedCar = max(speedCarTemp, 100);
+}
+
+void increaseSpeed(){
+  int speedCarTemp = speedCar + 8;
+  speedCar = min(speedCarTemp, 1023);
 }
 
 void powerOn() { // Abilito il movimento e accendo la macchina
