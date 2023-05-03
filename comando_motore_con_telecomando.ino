@@ -11,7 +11,7 @@
 /*
   PROTOCOLLO IR USATO : NEC
 */
-#define RECV_PIN 7         // Pin ricevitore IR  - IR_PIN
+#define RECV_PIN 25         // Pin ricevitore IR  - IR_PIN
 #define TRIG 15
 #define ECHO 2
 #define BUZZER_PASSIVO 13
@@ -19,7 +19,7 @@
 #define LED_RGB_R 27
 #define LED_RGB_G 14
 #define LED_RGB_B 12
-#define LED_IR_ON 35     // Eventualmente cambiare 
+#define LED_IR_ON 34     
 #define LEDC_CHANNEL_R 0 // Il canale 0 è del rosso
 #define LEDC_CHANNEL_G 1 // Il canale 1 è del verde
 #define LEDC_CHANNEL_B 2 // Il canale 2 è del blu
@@ -42,6 +42,8 @@ void goBackRight();
 void goBackLeft();
 void powerOn();
 void stopCar();
+void decreaseSpeed();
+void increaseSpeed();
 
 
 // Definizione di un nuovo tipo di dato per definire un puntatore a funzione da usare come valore di ritorno di una funzione. (per ovviare problemi di compilazione)
@@ -82,8 +84,8 @@ struct vectoredCode {
   {0xF30CFF00, &goAheadLeft, "goAheadLeft"}, // La macchina a va avanti verso sx --> 1
   {0xB54AFF00, &goBackRight, "goBackRight"}, // La macchina torna indietro verso dx --> 9
   {0xBD42FF00, &goBackLeft,  "goBackLeft"}, // La macchina torna indietro verso sx --> 7
-  // {0xBA45FF00, &decreseSpeed, "decreseSpeed"} , // Diminuisco velocità auto --> -
-  // {0xBA45FF00, &increaseSpeed, "increaseSpeed"} , // Aumento velocità auto --> +
+  {0xF807FF00, &decreaseSpeed, "decreaseSpeed"} , // Diminuisco velocità auto --> triangolo basso
+  {0xF609FF00, &increaseSpeed, "increaseSpeed"} , // Aumento velocità auto --> triangolo alto
 };
 
 // Funzione che restituisce la descrizione dell'azione/funzione inerente uno specifico codice
