@@ -41,9 +41,10 @@ void goAheadLeft();
 void goBackRight();
 void goBackLeft();
 void powerOn();
-void stopCar();
+void powerOff();
 void decreaseSpeed();
 void increaseSpeed();
+void stopCar();
 
 
 // Definizione di un nuovo tipo di dato per definire un puntatore a funzione da usare come valore di ritorno di una funzione. (per ovviare problemi di compilazione)
@@ -59,7 +60,7 @@ typedef ptr (*pt)();
   2 -> AVANTI  
   3 -> AVANTI - DX
   4 -> SX
-  5 -> NON USATO OPPURE IMPLEMENTABILE COME STOP
+  5 -> Macchina Ferma 
   6 -> DX
   7 -> INDIETRO - SX
   8 -> INDIETRO
@@ -75,7 +76,7 @@ struct vectoredCode {
 } codeList [] = {
 
   {0xBA45FF00, &powerOn, "power"} , // La macchina si accende --> POWER
-  {0xB847FF00, &stopCar, "stop"} , // La macchina si ferma --> STOP 
+  {0xB847FF00, &powerOff, "powerOff"} , // La macchina si spegne --> POWEROFF 
   {0xE718FF00, &goAhead, "goAhead"} , // La macchina va avanti --> 2
   {0xAD52FF00, &goBack, "goBack"} , // La macchina torna indietro --> 8
   {0xA55AFF00, &goRight, "goRight"} , // La macchina va a dx --> 6
@@ -84,6 +85,7 @@ struct vectoredCode {
   {0xF30CFF00, &goAheadLeft, "goAheadLeft"}, // La macchina a va avanti verso sx --> 1
   {0xB54AFF00, &goBackRight, "goBackRight"}, // La macchina torna indietro verso dx --> 9
   {0xBD42FF00, &goBackLeft,  "goBackLeft"}, // La macchina torna indietro verso sx --> 7
+  {0xE31CFF00, &stopCar, "stop"}, // La macchina si ferma --> 5
   {0xF807FF00, &decreaseSpeed, "decreaseSpeed"} , // Diminuisco velocità auto --> triangolo basso
   {0xF609FF00, &increaseSpeed, "increaseSpeed"} , // Aumento velocità auto --> triangolo alto
 };
@@ -328,7 +330,7 @@ void powerOn() { // Abilito il movimento e accendo la macchina
   isOn = true;
 }
 
-void stopCar() {  // PowerOff
+void powerOff() {  // PowerOff
 
       digitalWrite(IN_1, LOW);
       digitalWrite(IN_2, LOW);
@@ -341,6 +343,21 @@ void stopCar() {  // PowerOff
       digitalWrite(LED_IR_ON, LOW);
 
       isOn = false;
+}
+
+void stopCar() {  // StopCar
+
+      digitalWrite(IN_1, LOW);
+      digitalWrite(IN_2, LOW);
+      analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, LOW);
+      digitalWrite(IN_4, LOW);
+      analogWrite(ENB, speedCar);
+
+      digitalWrite(LED_IR_ON, LOW);
+
+      //isOn = true;
 }
 
 void nothing() {
