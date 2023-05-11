@@ -15,7 +15,6 @@
 #define TRIG 15
 #define ECHO 2
 #define BUZZER_PASSIVO 13
-#define LED_VERDE 32
 #define LED_RGB_R 27
 #define LED_RGB_G 14
 #define LED_RGB_B 12
