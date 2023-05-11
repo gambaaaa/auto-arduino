@@ -19,7 +19,7 @@
 #define LED_RGB_R 27
 #define LED_RGB_G 14
 #define LED_RGB_B 12
-#define LED_IR_ON 34     
+#define LED_IR_ON 32     
 #define LEDC_CHANNEL_R 0 // Il canale 0 è del rosso
 #define LEDC_CHANNEL_G 1 // Il canale 1 è del verde
 #define LEDC_CHANNEL_B 2 // Il canale 2 è del blu
