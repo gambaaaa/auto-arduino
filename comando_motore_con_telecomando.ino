@@ -66,13 +66,13 @@ typedef ptr (*pt)();
   9 -> INDIETRO - DX
 */
 
-struct vectoredCode {
+struct vectorCode {
 
   uint32_t codeValue;  // Codice IR
   void (*action)();    // Funzione da eseguire associata allo specifico codice
   const char *actionDescription;   // Breve descrizione / titolo della funzione associata al codice: itile per eventuale debug, logfile...
 
-} codeList [] = {
+} codeList [] = { //definisco la struttura che conterrà dati inerenti codice IR e rispettiva "azione" da eseguire. 
 
   {0xBA45FF00, &powerOn, "power"} , // La macchina si accende --> POWER
   {0xB847FF00, &powerOff, "powerOff"} , // La macchina si spegne --> POWEROFF 
@@ -161,9 +161,9 @@ void setup() {
   pinMode(IN_4, OUTPUT); 
   pinMode (TRIG, OUTPUT);
   pinMode (ECHO, INPUT);
-  pinMode (LED_VERDE, OUTPUT);
+//  pinMode (LED_VERDE, OUTPUT);
   pinMode(LED_IR_ON, OUTPUT);
-  welcomeLed(); 
+// welcomeLed(); 
 }
 
 void suonaBuzzerDistanza(float distanza) {
@@ -364,7 +364,7 @@ void nothing() {
   Serial.println("Codice non riconosciuto / non previsto");
 }
 
-void welcomeLed() {
+/*void welcomeLed() {
   
   digitalWrite(LED_VERDE, HIGH);
   delay(500);  
@@ -375,18 +375,11 @@ void welcomeLed() {
   digitalWrite(LED_VERDE, LOW);
   delay(500); 
 }
+*/
 
-void loop() {
- 
-  digitalWrite(TRIG, HIGH);
-  delayMicroseconds(9);  //impulso da 10us
-  digitalWrite(TRIG, LOW);
-  readout = pulseIn(ECHO, HIGH);
-  distanza = (float) readout/58; //velocità A/R = 340m/s => distanza(cm) = T(ms)*17 = T(us)*0,017 = T(us)/58 
-  Serial.println(distanza);
-  suonaBuzzerDistanza(distanza);
+//Gestione IR
 
-  //Gestione IR
+void decodeIRSignal(){
 
   /*
      * Controllo se ci sono dati disponibili/ se son stati ricevuti dei dati e se sì, prova a decodificarli.
@@ -428,6 +421,21 @@ void loop() {
   */
     receiver.resume(); // Enable receiving of the next value
   }
+
+}
+
+void loop() {
+ 
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(9);  //impulso da 10us
+  digitalWrite(TRIG, LOW);
+  readout = pulseIn(ECHO, HIGH);
+  distanza = (float) readout/58; //velocità A/R = 340m/s => distanza(cm) = T(ms)*17 = T(us)*0,017 = T(us)/58 
+  Serial.println(distanza);
+  suonaBuzzerDistanza(distanza);
+
+  //Gestione IR
+  decodeIRSignal();
 
   delay(100);
 }
