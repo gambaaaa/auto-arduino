@@ -53,17 +53,19 @@ typedef ptr (*pt)();
 /*
   "Codici Vettorizzati": per codici si intende il codice associato allo specifico segnale IR ricevuto
 
-  TASTI UTILIZZATI per gestire i movimenti della macchina : 
+  Tasti/Pulsanti del telecomando utilizzati per gestire i movimenti della macchina : 
 
   1 -> AVANTI - SX
   2 -> AVANTI  
   3 -> AVANTI - DX
   4 -> SX
-  5 -> Macchina Ferma 
+  5 -> Auto Ferma senza "spegnersi"
   6 -> DX
   7 -> INDIETRO - SX
   8 -> INDIETRO
   9 -> INDIETRO - DX
+  POWER -> ON
+  STOP -> OF - auto spenta
 */
 
 struct vectorCode {
