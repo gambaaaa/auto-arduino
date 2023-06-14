@@ -265,25 +265,36 @@ void goAheadRight() {
       
   digitalWrite(IN_1, LOW);
   digitalWrite(IN_2, HIGH);
-  analogWrite(ENA, speedCar/speedCoeff);
+  analogWrite(ENA, speedCar);
  
   digitalWrite(IN_3, LOW);
   digitalWrite(IN_4, HIGH);
-  analogWrite(ENB, speedCar);
+  analogWrite(ENB, speedCar/speedCoeff);
 }
 
 void goAheadLeft() {
       
   digitalWrite(IN_1, LOW);
   digitalWrite(IN_2, HIGH);
-  analogWrite(ENA, speedCar);
+  analogWrite(ENA, speedCar/speedCoeff);
 
   digitalWrite(IN_3, LOW);
   digitalWrite(IN_4, HIGH);
-  analogWrite(ENB, speedCar/speedCoeff);
+  analogWrite(ENB, speedCar);
 }
 
 void goBackRight() { 
+
+  digitalWrite(IN_1, HIGH);
+  digitalWrite(IN_2, LOW);
+  analogWrite(ENA, speedCar);
+
+  digitalWrite(IN_3, HIGH);
+  digitalWrite(IN_4, LOW);
+  analogWrite(ENB, speedCar/speedCoeff);
+}
+
+void goBackLeft(){ 
 
   digitalWrite(IN_1, HIGH);
   digitalWrite(IN_2, LOW);
@@ -292,17 +303,6 @@ void goBackRight() {
   digitalWrite(IN_3, HIGH);
   digitalWrite(IN_4, LOW);
   analogWrite(ENB, speedCar);
-}
-
-void goBackLeft(){ 
-
-  digitalWrite(IN_1, HIGH);
-  digitalWrite(IN_2, LOW);
-  analogWrite(ENA, speedCar);
-
-  digitalWrite(IN_3, HIGH);
-  digitalWrite(IN_4, LOW);
-  analogWrite(ENB, speedCar/speedCoeff);
 }
 
 void decreaseSpeed(){
@@ -356,7 +356,7 @@ void stopCar() {  // StopCar
       digitalWrite(IN_4, LOW);
       analogWrite(ENB, speedCar);
 
-      digitalWrite(LED_IR_ON, LOW);
+      //digitalWrite(LED_IR_ON, LOW);
 
       //isOn = true;
 }
